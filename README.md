@@ -2,6 +2,8 @@ CSV FILTERING with search. This is still an easy to implament project and works 
 searching for data. So for example getting any missing data like a proper security name, proper symbol, proper exchange. It then also maps it out into the
 correct format. 
 
+Before looking at the documination, I suggest taking a look at the project files as I have put a lot of comments there explaining everything, just to get familiar. 
+
 The goal here is still to make everything as maintainable and modifiable easly through making simple and well explained code. My objective was to make it 
 easily implamentable into your own system.
 
