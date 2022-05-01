@@ -1,6 +1,6 @@
 //change this in the case that other columns will be added into the new format
 var header = ["Account #",	'Trade date',	'Settlement date',	'Symbol',	'Exchange',	'Security name',	'TE type',	'Broker type',	'#units',	'$price/unit',	'Amount']
-const exchanges = ['TSX', 'TSXV', 'CSE', 'NASDAQ', 'NYSE', 'ARCA', 'NEO']
+
 
 //ignore all variables here is not looking at the searching version
 const apiFormatToSystem =  {"TO": ["TSX"], "V": ["TSXV"], "CN": ["CSE"], "US": ["US"], "NEO": ["NEO"]}
@@ -424,5 +424,7 @@ function finalizeOptions() {
     }
 
 
+    //take a look at how the final output looks
+    console.log(output)
     mapToProperFormat(output, mappingFormation)
 }
