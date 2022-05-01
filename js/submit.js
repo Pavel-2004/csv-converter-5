@@ -590,7 +590,7 @@ function virtualBankFilter(data){
     //addOptionsToFinalFormat(finalData, 6, 3, 6, 17, "VIRTUAL BROKERS")
 }
 
-//case that options need to be added such as exchange and it can not just be converted straight into csv
+//this is where the options are added for the user based on info that are unclear. For example security name, proper exchange.
 function addOptionsToFinalFormat(info, symbolIndex, originalName, originalSymbol, newInfo, typeBroker) {
 
     infoFinal = []
@@ -620,7 +620,8 @@ function addOptionsToFinalFormat(info, symbolIndex, originalName, originalSymbol
 
         }  else {
 
-            result = filterForTickerAdvanced("NONE-NONE", info[i][originalName])
+            //case that there isn't a ticker for example TD
+            result = filterForTickerAdvanced(false, info[i][originalName])
             if(info[i][originalName]) {
                 if(result.length > 0) {
                     infoFinal[i].push(result[0][0])
