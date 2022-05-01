@@ -146,9 +146,9 @@ function questTradeFilter(data){
                 exchange = ((data[i][3]).split('.'))[1]
                 symbol = ((data[i][3]).split('.'))[0]
                 if(exchange == "TO"){
-                    temp.push(getSecurityNameFromTicker(symbol, 'TO')["Name"])
+                    temp.push("")
                 } else if(exchange == "VN"){
-                    temp.push(getSecurityNameFromTicker(symbol, 'V')["Name"])
+                    temp.push("")
                 } else{
                 }
             } else if(j == 3){
@@ -195,9 +195,9 @@ function questTradeFilter(data){
         }
     }
 
-    //addOptionsToFinalFormat(final, 4, 16, 4, 18, "questrade")
+    addOptionsToFinalFormat(final, 4, 16, 4, 18, "questrade")
     //converts all of the important columns into proper format
-    return mapToProperFormat(final,{13:0, 0:1, 1:2, 4:3, 5:4, 16:5, 3:6, 2:7, 7:8, 8:9, 11:10})
+    //return mapToProperFormat(final,{13:0, 0:1, 1:2, 4:3, 5:4, 16:5, 3:6, 2:7, 7:8, 8:9, 11:10})
 }
 
 
@@ -276,8 +276,8 @@ function tdFilter(data){
         }
 
     }
-    //return addOptionsToFinalFormat(final, false,2, 11,14, "TD")
-    return mapToProperFormat(final, {9:0, 0:1, 1:2, 11:3, 10:4, 12:5, 4:6, 3:7, 5:8, 6:9, 8:10})
+    return addOptionsToFinalFormat(final, false,2, 11,14, "TD")
+    //return mapToProperFormat(final, {9:0, 0:1, 1:2, 11:3, 10:4, 12:5, 4:6, 3:7, 5:8, 6:9, 8:10})
 
 }
 
@@ -388,8 +388,8 @@ function rbcFilter(data){
 
     }
 
-    //return addOptionsToFinalFormat(final, 3,4, 11, 15, "RBC")
-    return mapToProperFormat(final, {8:0, 0:1, 7:2, 3:3, 12:4, 13:5, 1:6, 2:7, 5:8, 6:9, 9:10})
+    return addOptionsToFinalFormat(final, 3,4, 11, 15, "RBC")
+    //return mapToProperFormat(final, {8:0, 0:1, 7:2, 3:3, 12:4, 13:5, 1:6, 2:7, 5:8, 6:9, 9:10})
 }
 
 function scotiaFilter(data){
@@ -438,8 +438,8 @@ function scotiaFilter(data){
 
 
 
-    mapToProperFormat(finalData, {11:0, 2:1, 3:2, 1:3, 12:4, 0:5, 5:6, 6:7, 7:8, 9:9, 10:10})
-    //return addOptionsToFinalFormat(finalData, 1, 0, 12, 14, "SCOTIA BANK")
+    //mapToProperFormat(finalData, {11:0, 2:1, 3:2, 1:3, 12:4, 0:5, 5:6, 6:7, 7:8, 9:9, 10:10})
+    return addOptionsToFinalFormat(finalData, 1, 0, 12, 14, "SCOTIA BANK")
 }
 
 
@@ -494,8 +494,8 @@ function cibcFilter(data){
         }
     }
 
-    //return addOptionsToFinalFormat(finalData, 5, 7, 5, 21, "CIBC")
-    mapToProperFormat(finalData, {18:0, 0:1, 1:2, 5:3, 19:4, 7:5, 3:6, 4:7, 8:8, 10:9, 14:10})
+    return addOptionsToFinalFormat(finalData, 5, 7, 5, 21, "CIBC")
+    //mapToProperFormat(finalData, {18:0, 0:1, 1:2, 5:3, 19:4, 7:5, 3:6, 4:7, 8:8, 10:9, 14:10})
 }
 
 function nationalBankFilter(data){
@@ -538,8 +538,8 @@ function nationalBankFilter(data){
             finalData.push(tempRow)
         }
     }
-    mapToProperFormat(finalData, {0:0, 2:1, 3:2, 6:3, 15:4, 7:5, 8:6, 9:7, 10:8, 13:9, 12:10})
-    //addOptionsToFinalFormat(finalData, 6, 7, 6, 17, "NATIONAL BANK")
+    //mapToProperFormat(finalData, {0:0, 2:1, 3:2, 6:3, 15:4, 7:5, 8:6, 9:7, 10:8, 13:9, 12:10})
+    addOptionsToFinalFormat(finalData, 6, 7, 6, 17, "NATIONAL BANK")
 
 }
 
@@ -586,12 +586,13 @@ function virtualBankFilter(data){
     }
 
 
-    mapToProperFormat(finalData, {0:0, 1:1, 2:2, 6:3, 15:4, 3:5, 4:6, 5:7, 11:8, 13:9, 14:10})
-    //addOptionsToFinalFormat(finalData, 6, 3, 6, 17, "VIRTUAL BROKERS")
+    //mapToProperFormat(finalData, {0:0, 1:1, 2:2, 6:3, 15:4, 3:5, 4:6, 5:7, 11:8, 13:9, 14:10})
+    addOptionsToFinalFormat(finalData, 6, 3, 6, 17, "VIRTUAL BROKERS")
 }
 
 //this is where the options are added for the user based on info that are unclear. For example security name, proper exchange.
 function addOptionsToFinalFormat(info, symbolIndex, originalName, originalSymbol, newInfo, typeBroker) {
+    console.log(newInfo)
 
     infoFinal = []
 
@@ -641,6 +642,6 @@ function addOptionsToFinalFormat(info, symbolIndex, originalName, originalSymbol
         }
 
     }
-
+    console.log(infoFinal)
     return optionVisualizer(infoFinal, symbolIndex,  originalName, originalSymbol,  newInfo, typeBroker)
 }
