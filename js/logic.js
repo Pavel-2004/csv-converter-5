@@ -219,20 +219,23 @@ function filterForTickerAdvanced(ticker, description) {
         })
 
 
-        //filters out all of the results to match the description as much as possible by using the keywords in the description
-        descriptionKeywords = description.toUpperCase().trim().split(" ")
-        for (let i = 0; i < apiSearch.length; i++) {
-            apiSearchKeywords = apiSearch[i][0].toUpperCase().trim().split(" ")
 
-            for (let j = 0; j < apiSearchKeywords.length; j++) {
-                if(descriptionKeywords.includes(apiSearchKeywords[j])){
-                    filterSearch.push(apiSearch[i])
-                    break
-                }
+    }
+
+
+    //filters out all of the results to match the description as much as possible by using the keywords in the description
+    descriptionKeywords = description.toUpperCase().trim().split(" ")
+    for (let i = 0; i < apiSearch.length; i++) {
+        apiSearchKeywords = apiSearch[i][0].toUpperCase().trim().split(" ")
+
+        for (let j = 0; j < apiSearchKeywords.length; j++) {
+            if(descriptionKeywords.includes(apiSearchKeywords[j])){
+                filterSearch.push(apiSearch[i])
+                break
             }
         }
-        final = filterSearch
     }
+    final = filterSearch
 
     //in the case the the symbol lookup didn't find anything or it was not specified this does a description search
     if (filterSearch.length == 0){
