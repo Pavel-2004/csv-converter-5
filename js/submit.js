@@ -281,7 +281,7 @@ function tdFilter(data){
 
 }
 
-function rbcFilter(data){
+function rbcFilter(data) {
     dataReal = []
     for (let i = 9; i < data.length; i++) {
         trueValue = ''
@@ -540,7 +540,6 @@ function nationalBankFilter(data){
     }
     //mapToProperFormat(finalData, {0:0, 2:1, 3:2, 6:3, 15:4, 7:5, 8:6, 9:7, 10:8, 13:9, 12:10})
     addOptionsToFinalFormat(finalData, 6, 7, 6, 17, "NATIONAL BANK")
-
 }
 
 
