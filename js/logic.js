@@ -9,6 +9,13 @@ const apiKey = "625b5df8a34626.35549490"
 
 
 //info that is needed when mapping out final formats
+//final name is the index where the final name is stored added by the search function
+//final exchange is where the final exchange is stored added by search functionality
+//final symbol is where the final symbol INFO is stored added by the functionality
+//original name is where the original name is stored in the case that the user flags an option, it could be reset to the default values
+//originalSymbol is the index where the original symbol is so that it can be used if the user flags the row
+//infoArr is where all of the info is store
+//formation is used by the mapping function in order to map out all the proper index into the correct final format
 const finalizeInfo = {
     "TD" : {
         "finalName": 13,
@@ -76,33 +83,7 @@ const finalizeInfo = {
 }
 
 
-function isNumeric(str) {
-    if (typeof str != "string") return false // we only process strings!
-    return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
-        !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
-}
-
-function checkExchangeCorrect(exchange){
-    if(Object.keys(apiFormatToSystem).includes(exchange)){
-        return {"contains": true, "tickers": apiFormatToSystem[exchange]}
-    } else{
-        return {"contains": false}
-    }
-}
-
-
-function convertExchangeToApiFormat(exchange){
-    return systemToApiFormat[exchange]
-}
-
-function convertExchangeFromApiFormat(exchange){
-    return apiFormatToSystem[exchange]
-}
-
-
-
-
-
+//checks whether or not an array is equal
 function checkArrayEqual(arrayOne, arrayTwo){
 
     if(arrayOne.length == arrayTwo.length){
@@ -119,6 +100,8 @@ function checkArrayEqual(arrayOne, arrayTwo){
 }
 
 
+
+//this converts a csv once it is uploaded into an array format so it is easy to work with
 function CSVtoArray(text) {
     rows = text.split('\n')
     final = []
@@ -167,6 +150,8 @@ function mapToProperFormat(currentData, args){
 
 }
 
+
+//once the process is done this converts the array format into a csv and then downloads it for the user
 function arrayToCsv(data, type){
     final = data.map(row =>
         row
@@ -179,6 +164,8 @@ function arrayToCsv(data, type){
 }
 
 
+
+//this downloads the csv for the user
 function downloadBlob(content, contentType) {
     today = new Date();
     dd = String(today.getDate()).padStart(2, '0');
@@ -202,57 +189,52 @@ function downloadBlob(content, contentType) {
 
 
 
-function filterDescriptionTD(data){
-    all = data.split(" ")
-    finalData = ""
-    for (let i = 0; i < all.length; i++) {
-        if(/\d/.test(all[i])){
-            break
-        } else{
-            finalData = finalData + " " + all[i]
-        }
-    }
-
-    return finalData
-}
-
-
-
-
+//this takes an argument for the ticker and descriptions and looks for options about exchange, security name, symbol and minimizes the amount of options
 function filterForTickerAdvanced(ticker, description) {
     apiSearch = []
-    $.ajax({
-        url: "https://eodhistoricaldata.com/api/search/" + ticker + "?api_token=" + apiKey,
-        type: "get",
-        async: false,
-        dataType: "json",
-        success: function (res){
-            for (let i = 0; i < res.length; i++) {
-                if(res[i]["Code"] == ticker && Object.keys(apiFormatToSystem).includes(res[i]["Exchange"])) {
-                    name = res[i]["Name"]
-                    currentTicker = res[i]["Code"]
-                    exchange = res[i]["Exchange"]
-                    temp = [name, currentTicker, exchange]
-                    apiSearch.push(temp)
+
+    filterSearch = []
+
+
+    //checks whether or not a ticker is specified
+    if(ticker) {
+        $.ajax({
+            url: "https://eodhistoricaldata.com/api/search/" + ticker + "?api_token=" + apiKey,
+            type: "get",
+            async: false,
+            dataType: "json",
+            success: function (res){
+                for (let i = 0; i < res.length; i++) {
+
+                    //checks whether or not this is the right ticker given by the API and it also checks that is has the supported exchange
+                    if(res[i]["Code"] == ticker && Object.keys(apiFormatToSystem).includes(res[i]["Exchange"])) {
+                        name = res[i]["Name"]
+                        currentTicker = res[i]["Code"]
+                        exchange = res[i]["Exchange"]
+                        temp = [name, currentTicker, exchange]
+                        apiSearch.push(temp)
+                    }
+                }
+            }
+        })
+
+
+        //filters out all of the results to match the description as much as possible by using the keywords in the description
+        descriptionKeywords = description.toUpperCase().trim().split(" ")
+        for (let i = 0; i < apiSearch.length; i++) {
+            apiSearchKeywords = apiSearch[i][0].toUpperCase().trim().split(" ")
+
+            for (let j = 0; j < apiSearchKeywords.length; j++) {
+                if(descriptionKeywords.includes(apiSearchKeywords[j])){
+                    filterSearch.push(apiSearch[i])
+                    break
                 }
             }
         }
-    })
-
-    filterSearch = []
-    descriptionKeywords = description.toUpperCase().trim().split(" ")
-    for (let i = 0; i < apiSearch.length; i++) {
-        apiSearchKeywords = apiSearch[i][0].toUpperCase().trim().split(" ")
-
-        for (let j = 0; j < apiSearchKeywords.length; j++) {
-            if(descriptionKeywords.includes(apiSearchKeywords[j])){
-                filterSearch.push(apiSearch[i])
-                break
-            }
-        }
+        final = filterSearch
     }
-    final = filterSearch
 
+    //in the case the the symbol lookup didn't find anything or it was not specified this does a description search
     if (filterSearch.length == 0){
         apiSearch = []
         $.ajax({
@@ -275,7 +257,6 @@ function filterForTickerAdvanced(ticker, description) {
         })
         
         final = []
-
         counter = 0
         while (true) {
             for (let i = 0; i < apiSearch.length; i++) {
@@ -310,6 +291,7 @@ function filterForTickerAdvanced(ticker, description) {
 }
 
 
+//in the case the user flags a certain option than this well setup everything so that the original data is set instead
 function deleteWrongInfo(id, generalId) {
     importantOptions[id][generalId] = false
 
@@ -317,11 +299,22 @@ function deleteWrongInfo(id, generalId) {
 
 
 
+
+//this is where the pointer for all of the IDs of the inputs are stored so that they can be used to get the proper values
 var optionPointers = {}
+
+//this is where the optionInfo is stored globally and is used once the inputs are submitted by the user
 var importantOptions = {}
+
+//this is where the info on ticker is stored by id and can be grabbed just by id in the finalizeOptions function
 var generalInfoOnTicker = {}
+
+
+//this is where the type of broker is stored
 var type = ""
-//all of the params past optionInfo are indexes
+
+
+//all of the params past optionInfo are indexes in different formats
 function optionVisualizer(optionInfo, symbolIndex, originalName, originalSymbol, newInfo, typeBroker){
     type = typeBroker
     document.getElementById("inputBoxes").classList.add("d-none")
@@ -330,11 +323,17 @@ function optionVisualizer(optionInfo, symbolIndex, originalName, originalSymbol,
     document.getElementById("finalizeButton").setAttribute("onclick", `finalizeOptions()`)
     importantOptions = optionInfo
 
+
+    //this keeps track of the ids linking certain  information about stocks so they can be easily referenced
     optionCounter = 0
     for (let i = 0; i < optionInfo.length; i++) {
+        //this is the case that there
         if(optionInfo[i][newInfo]) {
             //index of info (all trading logs) : id of selector
             optionPointers[i] = "option" + i
+
+            //this is how the option menu will look feel free to change this and sync up to your system
+            //the button on the bottom is to flag a certain row in the case that the wrong details are given and it will restore to original data given
             element = `
                     <div class="row justify-content-center border" style="margin-top: 10px;">
                             <div class="col-3">
@@ -354,7 +353,11 @@ function optionVisualizer(optionInfo, symbolIndex, originalName, originalSymbol,
             for (let j = 0; j < optionInfo[i][newInfo].length; j++) {
                 option = document.createElement("option")
                 generalInfoOnTicker[optionCounter] = optionInfo[i][newInfo][j]
+
+                //the value matches with a certain ID that is then used to get the info of chosen option
                 option.value = optionCounter
+
+                //this orders it by security name and then then ticker, exchange
                 option.innerText = optionInfo[i][newInfo][j][0] + " " + optionInfo[i][newInfo][j][1] + " " + apiFormatToSystem[optionInfo[i][newInfo][j][2]]
                 if(j == 0) {
                     document.getElementById("option" + i).value = j
@@ -366,9 +369,12 @@ function optionVisualizer(optionInfo, symbolIndex, originalName, originalSymbol,
     }
 }
 
-
+//this is the function activated once the finalize button is clicked
 function finalizeOptions() {
+    //this stored the final result
     output = []
+
+    //this is all the indexes needed to retrieve and push proper data. These are retrieved from the finalizeInfo variable
     expectedNameIndex = finalizeInfo[type]["finalName"]
     expectedExchangeIndex = finalizeInfo[type]["finalExchange"]
     expectedSymbolIndex = finalizeInfo[type]["finalSymbol"]
@@ -379,18 +385,37 @@ function finalizeOptions() {
 
 
 
+    //check how the importantOptions array looks like
+    //console.log(importantOptions)
     for (let i = 0; i < importantOptions.length; i++) {
         temp = importantOptions[i]
+
+        //checks if there is a info on ticker, if it is false that means that either no results were found on this row or the user flagged it as not matching
         if(temp[symbolIndexArray]){
+
+            //takes the value of each selector and then matches it with the correct info retrieved from the variable generalInfoOnTicker[id]
+
             generalInfoOnTickerId = document.getElementById(optionPointers[i]).value
+
+            //check how generalInfoOnTicker looks like
+            //console.log(generalInfoOnTicker)
+
+
             correctSymbol = generalInfoOnTicker[generalInfoOnTickerId][1]
             correctName = generalInfoOnTicker[generalInfoOnTickerId][0]
             correctExchange = apiFormatToSystem[generalInfoOnTicker[generalInfoOnTickerId][2]]
+
+            //it maps all of this data to the correct indexes so that the mapToProperFormat can work correctly
             temp[expectedNameIndex] = correctName
             temp[expectedExchangeIndex] = correctExchange
             temp[expectedSymbolIndex] = correctSymbol
             output.push(JSON.parse(JSON.stringify(temp)))
+
+
+        //this is the case where either no result was found or the user flagged it. It then reverts to the original format
         } else {
+
+            //maps the orginal data to the correct format
             temp[expectedNameIndex] = temp[originalNameIndex]
             temp[expectedExchangeIndex] = ""
             temp[expectedSymbolIndex] = temp[originalSymbolIndex]
