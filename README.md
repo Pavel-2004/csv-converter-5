@@ -44,13 +44,13 @@ corresponding to the index of the row in the correct format
 addOptionsToFinalFormat(info, symbolIndex, originalName, OriginalSymbol, newInfo, typeBroker. 
 
 
-info - this is where your filtered array goes 
-symbolIndex - this is where the symbol is located in each row by index 
-originalName - this is where the name given by the broker goes 
-originalSymbol - this is the same as symbolIndex I just haven't gotten rid of it yet
-newInfo - this is where the all of the options for each stock is going to be stored once the next function adds it in. You could put random value as this
-variable isn't being used as if right now. 
-typeBroker - this is where you put the name of the broker you are adding. 
+- info - this is where your filtered array goes 
+- symbolIndex - this is where the symbol is located in each row by index 
+- originalName - this is where the name given by the broker goes 
+- originalSymbol - this is the same as symbolIndex I just haven't gotten rid of it yet
+- newInfo - this is where the all of the options for each stock is going to be stored once the next function adds it in. You could put random value as this
+- variable isn't being used as if right now. 
+- typeBroker - this is where you put the name of the broker you are adding. 
 
 7) Let the optionVisualizer function run and comment out everything in the finalizeOptions functions. Log importantOptions and based on the index in each
 row add a option in the finalizeInfo variable in logic.js and correspond all of the keys with the correct indexes. Use the comments as a reference. 
