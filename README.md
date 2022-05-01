@@ -16,9 +16,9 @@ in each. It can eiter return false or continue based on if the data is valid
 5) It then maps some possible options based on the given data for the security name, exchanges, and proper symbols to the given data. 
 6) Once the options are mapped out they are visualized to the user and the user can choose from them
 7) The user will then finalize the options and it will then take all of the data given by the user and place them into the format 
-8) In then maps everything into the proper format and downloads it the user
+8) It then maps everything into the proper format and downloads it the user
 
-Setting this with your system is simalar to the previous one.
+Setting this up with your system is simalar to the previous version.
 1) Go into the init.js file and change line 4 to the correct ID of the file upload input
 2) Change line 4 and 14 to the correct input id where selecting all the options 
 3) In the logic.js on line 8 change the api key to whatever api key you are using.
@@ -38,7 +38,7 @@ Setting up a new broker
 3) Inside of the errorCase function add an if statment with any custom function that checks if the format of the file is correct. Return false if it the 
 format is not correct and return the coresponding filtering function if it correct.
 4) Create a filtering function that filters and manipulates the data by looking at each row not including the header or any of the other rows.
-5) At the end of the function you can either mapp the data using mapToProperFormat function where you can pass in the current index of the data in each row
+5) At the end of the function you can either map the data using mapToProperFormat function where you can pass in the current index of the data in each row
 corresponding to the index of the row in the correct format
 6) In the case that you want to go through the searching process call the function 
 addOptionsToFinalFormat(info, symbolIndex, originalName, OriginalSymbol, newInfo, typeBroker. 
